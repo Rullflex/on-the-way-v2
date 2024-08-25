@@ -1,4 +1,4 @@
-import { User } from '../models/User';
+import { User } from '@/domain/models/User';
 
 /**
  * Сервис для работы с пользователями.
