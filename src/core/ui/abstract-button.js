@@ -1,17 +1,14 @@
-class AbstractButton {
+/**
+ * Абстрактный класс для UI-кнопок.
+ * @abstract
+ */
+export class AbstractButton {
+  /**
+   * Метод для рендера кнопки.
+   * @abstract
+   * @returns {void}
+   */
   render() {
     throw new Error('Method "render()" must be implemented');
-  }
-}
-
-export class WebButton extends AbstractButton {
-  render() {
-    // Реализация для Web
-  }
-}
-
-export class TelegramButton extends AbstractButton {
-  render() {
-    // Реализация для Telegram
   }
 }
