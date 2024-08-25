@@ -6,7 +6,7 @@
  * @type {JestConfig}
  */
 const config = {
-  testEnvironment: 'node',
+  testEnvironment: 'jsdom',
   moduleFileExtensions: ['js', 'json'],
   transform: {
     '^.+\\.js$': 'babel-jest',
