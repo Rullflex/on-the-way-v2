@@ -22,14 +22,4 @@ export class UserService {
     const userData = await this.adapter.fetchData(`users/${userId}`);
     return new User(userData); // Создаём объект модели User
   }
-
-  /**
-   * Проверяет, имеет ли пользователь определённую роль.
-   * @param {User} user - Объект пользователя.
-   * @param {string} role - Название роли.
-   * @returns {boolean} - True, если пользователь имеет роль.
-   */
-  hasUserRole(user, role) {
-    return user.roles.includes(role);
-  }
 }

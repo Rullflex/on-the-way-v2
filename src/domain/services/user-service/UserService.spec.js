@@ -24,14 +24,4 @@ describe('UserService', () => {
     expect(user.id).toBe('123');
     expect(user.name).toBe('John Doe');
   });
-
-  it('should return true if user has the given role', async () => {
-    const user = await userService.getUserProfile('123');
-    expect(userService.hasUserRole(user, 'user')).toBe(true);
-  });
-
-  it('should return false if user does not have the given role', async () => {
-    const user = await userService.getUserProfile('123');
-    expect(userService.hasUserRole(user, 'admin')).toBe(false);
-  });
 });
