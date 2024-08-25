@@ -1,28 +1,28 @@
-/**
- * @typedef {Object} User
- * @property {string} id - Уникальный идентификатор пользователя.
- * @property {string} name - Имя пользователя.
- * @property {string} email - Email пользователя.
- */
+import { UserService } from '../../domain/services/UserService';
 
 /**
  * Контроллер для работы с пользователями.
  */
 export class UserController {
   /**
-   * @param {RestAdapter} adapter - Адаптер для взаимодействия с API.
+   * Создаёт новый экземпляр UserController.
+   * @param {Object} dependencies - Зависимости, необходимые для работы контроллера.
+   * @param {RestAdapter} dependencies.adapter - Адаптер для взаимодействия с API.
    */
-  constructor(adapter) {
-    /** @private */
-    this.adapter = adapter;
+  constructor({ adapter }) {
+    this.userService = new UserService({ adapter });
   }
 
   /**
-   * Получает информацию о пользователе по его ID.
+   * Получает профиль пользователя и проверяет его роли.
    * @param {string} userId - Идентификатор пользователя.
-   * @returns {Promise<User>} - Объект пользователя.
+   * @returns {Promise<Object>} - Данные профиля пользователя и информация о ролях.
    */
   async getUserInfo(userId) {
-    return await this.adapter.fetchData(`users/${userId}`);
+    const user = await this.userService.getUserProfile(userId);
+    return {
+      profile: user,
+      isAdmin: user.isAdmin(),
+    };
   }
 }
