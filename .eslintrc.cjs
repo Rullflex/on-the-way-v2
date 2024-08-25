@@ -1,392 +1,71 @@
-require('@rushstack/eslint-patch/modern-module-resolution');
+module.exports = {
+  // https://eslint.org/docs/user-guide/configuring#configuration-cascading-and-hierarchy
+  // This option interrupts the configuration hierarchy at this file
+  // Remove this if you have an higher level ESLint config file (it usually happens into a monorepos)
+  root: true,
 
-const isProd = process.env.NODE_ENV === 'production';
-
-const internalPath = ['', 'gift-cards', 'korc'];
-const boundaries = ['shared', 'widgets', 'layouts', 'arms', 'pages', 'app'];
-
-/** @type {import('eslint').Linter.BaseConfig} */
-const config = {
-  env: { browser: true, es2021: true, node: true },
-  extends: [
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:vue/vue3-recommended',
-    'plugin:import/errors',
-    'plugin:import/warnings',
-    'plugin:import/typescript',
-    'plugin:boundaries/recommended',
-    '@vue/airbnb',
-    'plugin:prettier/recommended',
-  ],
-  plugins: ['@typescript-eslint', 'boundaries', 'prettier'],
-  parser: 'vue-eslint-parser',
+  // https://eslint.vuejs.org/user-guide/#how-to-use-a-custom-parser
+  // Must use parserOptions instead of "parser" to allow vue-eslint-parser to keep working
+  // `parser: 'vue-eslint-parser'` is already included with any 'plugin:vue/**' config and should be omitted
   parserOptions: {
-    parser: '@typescript-eslint/parser',
-    sourceType: 'module',
-    ecmaVersion: 'latest',
-    ecmaFeatures: { jsx: true, modules: true },
-    extraFileExtensions: ['.vue'],
-  },
-  settings: {
-    'import/resolver': {
-      typescript: {
-        directory: '.',
-        alwaysTryTypes: true,
-        project: './tsconfig.json',
-      },
-      node: {
-        paths: 'src',
-      },
-    },
-    'boundaries/elements': [
-      {
-        type: 'shared',
-        pattern: './shared',
-      },
-      {
-        type: 'widgets',
-        pattern: './widgets',
-      },
-      {
-        type: 'layouts',
-        pattern: './layouts',
-      },
-      {
-        type: 'arms',
-        pattern: './arms',
-      },
-      {
-        type: 'pages',
-        pattern: './pages',
-      },
-      {
-        type: 'app',
-        pattern: './app',
-      },
-    ],
-    'boundaries/include': ['src/**/*'],
-  },
-  rules: {
-    'prettier/prettier': ['error'],
-    'no-debugger': isProd ? 'error' : 'warn',
-    'no-console': isProd
-      ? ['error', { allow: ['warn', 'error'] }]
-      : ['warn', { allow: ['warn', 'error'] }],
-    'no-underscore-dangle': 'off',
-    'no-use-before-define': 'off',
-    'no-alert': ['error'],
-    'no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1, maxBOF: 1 }],
-    'consistent-return': ['warn'],
-    'import/extensions': 'off',
-    'import/no-extraneous-dependencies': 'off',
-    'import/no-unresolved': 'off',
-    'import/no-webpack-loader-syntax': 'off',
-    'import/prefer-default-export': 'off',
-    'import/export': ['error'],
-    'import/order': [
-      'error',
-      {
-        'newlines-between': 'always',
-        'warnOnUnassignedImports': false,
-        'pathGroupsExcludedImportTypes': ['builtin'],
-        'alphabetize': {
-          order: 'asc',
-          orderImportKind: 'asc',
-          caseInsensitive: true,
-        },
-        'groups': [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-          'unknown',
-          'type',
-          'object',
-        ],
-        'pathGroups': (() => {
-          const groups = [];
-
-          for (const name of internalPath) {
-            if (!name) {
-              groups.push(
-                ...boundaries.map((boundary) => ({
-                  pattern: `@/${boundary}/**`,
-                  group: 'internal',
-                  position: 'after',
-                })),
-              );
-
-              continue;
-            }
-
-            groups.push(
-              ...boundaries.map((boundary) => ({
-                pattern: `@${name}/${boundary}/**`,
-                group: 'internal',
-                position: 'after',
-              })),
-            );
-          }
-
-          return groups;
-        })(),
-      },
-    ],
-    'import/no-cycle': ['error', { maxDepth: 1 }],
-    'boundaries/element-types': [
-      'warn', // TODO: Это будет 'error'.
-      {
-        default: 'disallow',
-        // eslint-disable-next-line no-template-curly-in-string
-        message: '${file.type} is not allowed to import ${dependency.type}',
-        rules: [
-          {
-            from: './shared',
-            allow: './shared',
-          },
-          {
-            from: './widgets',
-            allow: ['./shared', './widgets'],
-          },
-          {
-            from: './layouts',
-            allow: ['./shared', './widgets'],
-          },
-          {
-            from: './arms',
-            allow: ['./shared', './widgets', './layouts'],
-          },
-          {
-            from: './pages',
-            allow: ['./shared', './widgets', './layouts', './arms'],
-          },
-          {
-            from: './app',
-            allow: ['./shared', './widgets', './layouts', './arms', './pages'],
-          },
-        ],
-      },
-    ],
-    'no-continue': 'off',
-    'no-await-in-loop': 'off',
-    'no-nested-ternary': ['warn'],
-    'no-return-assign': ['warn'],
-    'no-bitwise': 'off',
-    'no-plusplus': 'off',
-    'no-restricted-syntax': [
-      'error',
-      'ForInStatement',
-      'LabeledStatement',
-      'WithStatement',
-    ],
-    'no-param-reassign': [
-      'error',
-      { props: true, ignorePropertyModificationsFor: ['state'] },
-    ],
-    'dot-notation': ['error'],
-    'require-await': ['error'],
-    'spaced-comment': ['error', 'always'],
-    'camelcase': ['error'],
-    'curly': ['error', 'all'],
-    'guard-for-in': ['error'],
-    'default-param-last': ['error'],
-    'lines-between-class-members': [
-      'error',
-      'always',
-      { exceptAfterSingleLine: false },
-    ],
-    'padding-line-between-statements': [
-      'error',
-      {
-        blankLine: 'always',
-        prev: [
-          'block-like',
-          'break',
-          'class',
-          'const',
-          'debugger',
-          'directive',
-          'export',
-          'throw',
-          'try',
-          'function',
-          'import',
-        ],
-        next: '*',
-      },
-      {
-        blankLine: 'always',
-        prev: '*',
-        next: [
-          'block-like',
-          'break',
-          'class',
-          'const',
-          'continue',
-          'debugger',
-          'directive',
-          'return',
-          'throw',
-          'try',
-          'export',
-          'function',
-          'import',
-        ],
-      },
-      { blankLine: 'always', prev: 'block', next: 'block' },
-      {
-        blankLine: 'always',
-        prev: '*',
-        next: [
-          'multiline-const',
-          'multiline-expression',
-          'multiline-let',
-          'multiline-var',
-        ],
-      },
-      { blankLine: 'never', prev: 'break', next: 'case' },
-      { blankLine: 'never', prev: 'break', next: 'default' },
-      { blankLine: 'any', prev: 'singleline-const', next: 'singleline-const' },
-      { blankLine: 'any', prev: 'singleline-let', next: 'singleline-let' },
-      { blankLine: 'any', prev: 'singleline-var', next: 'singleline-var' },
-      { blankLine: 'any', prev: 'import', next: 'import' },
-    ],
-    'class-methods-use-this': ['error', { enforceForClassFields: false }],
-
-    // Vue.js
-    'vue/match-component-file-name': [
-      'error',
-      { extensions: ['jsx', 'js', 'tsx', 'ts', 'vue'], shouldMatchCase: true },
-    ],
-    'vue/component-options-name-casing': ['error', 'PascalCase'],
-    'vue/component-name-in-template-casing': [
-      'error',
-      'kebab-case',
-      {
-        registeredComponentsOnly: false,
-      },
-    ],
-    'vue/component-api-style': ['error', ['script-setup']],
-    'vue/block-lang': [
-      'error',
-      {
-        script: {
-          lang: 'ts',
-        },
-      },
-    ],
-    'vue/require-explicit-emits': [
-      'error',
-      {
-        allowProps: true,
-      },
-    ],
-    'vue/padding-line-between-tags': [
-      'error',
-      [{ blankLine: 'always', prev: '*', next: '*' }],
-    ],
-    'vue/valid-v-slot': 'off',
-    'vue/html-self-closing': [
-      'error',
-      {
-        html: {
-          void: 'any',
-          normal: 'always',
-          component: 'always',
-        },
-        svg: 'always',
-        math: 'always',
-      },
-    ],
-    'vue/block-order': [
-      'error',
-      {
-        order: ['script', 'template', 'style'],
-      },
-    ],
-    'vue/define-props-declaration': ['error', 'type-based'],
-    'vue/define-emits-declaration': ['error', 'type-based'],
-    'vue/no-ref-object-reactivity-loss': ['warn'],
-    'vue/match-component-import-name': ['error'],
-    'vue/no-empty-component-block': ['error'],
-    'vue/no-multiple-objects-in-class': ['error'],
-    'vue/no-static-inline-styles': ['error', { allowBinding: true }],
-    'vue/no-unused-refs': isProd ? ['error'] : ['warn'],
-    'vue/no-use-v-else-with-v-for': ['error'],
-    'vue/no-useless-mustaches': [
-      'error',
-      {
-        ignoreIncludesComment: true,
-        ignoreStringEscape: true,
-      },
-    ],
-    'vue/no-v-text': ['error'],
-    'vue/padding-line-between-blocks': ['error'],
-    'vue/prefer-define-options': ['error'],
-    'vue/require-typed-object-prop': ['error'],
-    'vue/require-typed-ref': ['error'],
-    'vue/v-for-delimiter-style': ['error', 'in'],
-
-    // Vue.js Accessibility
-    'vuejs-accessibility/anchor-has-content': 'off',
-    'vuejs-accessibility/click-events-have-key-events': 'off',
-    'vuejs-accessibility/mouse-events-have-key-events': 'off',
-    'vuejs-accessibility/label-has-for': 'off',
-    'vuejs-accessibility/no-autofocus': 'off',
-    'vuejs-accessibility/form-control-has-label': 'off',
-
-    // Typescript
-    'no-shadow': 'off',
-    'no-var': 'error',
-    'prefer-const': 'error',
-    'prefer-rest-params': 'error',
-    'prefer-spread': 'error',
-    'no-unused-vars': 'off',
-    'no-undef': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/no-shadow': ['error'],
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-non-null-assertion': 'off',
-    '@typescript-eslint/no-unused-vars': [
-      'error',
-      {
-        args: 'after-used',
-        ignoreRestSiblings: true,
-        argsIgnorePattern: '^_',
-        caughtErrors: 'none',
-      },
-    ],
-    '@typescript-eslint/no-use-before-define': [
-      'error',
-      {
-        functions: false,
-        enums: false,
-        typedefs: false,
-        ignoreTypeReferences: true,
-      },
-    ],
-    '@typescript-eslint/consistent-type-assertions': 'error',
+    parser: require.resolve('@typescript-eslint/parser'),
   },
 
-  overrides: [
-    {
-      files: ['*.d.ts'],
-      rules: {
-        '@typescript-eslint/no-empty-interface': 'off',
-        '@typescript-eslint/no-explicit-any': 'off',
-        '@typescript-eslint/no-unused-vars': 'off',
-      },
-    },
-    {
-      files: ['*.js', '*.cjs'],
-      rules: {
-        '@typescript-eslint/no-var-requires': 'off',
-      },
-    },
+  env: {
+    browser: true,
+    es2021: true,
+    node: true,
+  },
+
+  // Rules order is important, please avoid shuffling them
+  extends: [
+    // Base ESLint recommended rules
+    // 'eslint:recommended',
+
+    // https://github.com/typescript-eslint/typescript-eslint/tree/master/packages/eslint-plugin#usage
+    // ESLint typescript rules
+    'plugin:@typescript-eslint/recommended',
+
+    // https://github.com/prettier/eslint-config-prettier#installation
+    // usage with Prettier, provided by 'eslint-config-prettier'.
+    'prettier',
   ],
-};
 
-module.exports = config;
+  plugins: [
+    // required to apply rules which need type information
+    '@typescript-eslint',
+  ],
+
+  globals: {
+    ga: 'readonly', // Google Analytics
+    cordova: 'readonly',
+    __statics: 'readonly',
+    __QUASAR_SSR__: 'readonly',
+    __QUASAR_SSR_SERVER__: 'readonly',
+    __QUASAR_SSR_CLIENT__: 'readonly',
+    __QUASAR_SSR_PWA__: 'readonly',
+    process: 'readonly',
+    Capacitor: 'readonly',
+    chrome: 'readonly',
+  },
+
+  // add your custom rules here
+  rules: {
+    'prefer-promise-reject-errors': 'off',
+
+    'quotes': ['warn', 'single', { avoidEscape: true }],
+
+    // this rule, if on, would require explicit return type on the `render` function
+    '@typescript-eslint/explicit-function-return-type': 'off',
+
+    // in plain CommonJS modules, you can't use `import foo = require('foo')` to pass this rule, so it has to be disabled
+    '@typescript-eslint/no-var-requires': 'off',
+
+    // The core 'no-unused-vars' rules (in the eslint:recommended ruleset)
+    // does not work with type definitions
+    'no-unused-vars': 'off',
+
+    // allow debugger during development only
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+  },
+};

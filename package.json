@@ -1,0 +1,26 @@
+{
+  "name": "on-the-way",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint:check": "eslint \"{**/*,*}.{cjs,js,ts,jsx,tsx,vue}\" --cache --cache-strategy content --ignore-path .eslintignore",
+    "lint:write": "eslint \"{**/*,*}.{cjs,js,ts,jsx,tsx,vue}\" --cache --cache-strategy content --ignore-path .eslintignore --fix",
+    "lint:workflow": "eslint \"{**/*,*}.{cjs,js,ts,jsx,tsx,vue}\" --cache --cache-strategy content --ignore-path .eslintignore --quiet"
+  },
+  "devDependencies": {
+    "@rushstack/eslint-patch": "^1.10.4",
+    "@types/eslint": "^9.6.0",
+    "@types/node": "^22.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.1.0",
+    "@typescript-eslint/parser": "^8.1.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-boundaries": "^4.2.2",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
+  }
+}
