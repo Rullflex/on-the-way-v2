@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "dev": "vite --host",
+    "preview": "vite preview --host",
+    "build": "vite build",
     "test": "jest",
     "lint:check": "eslint \"{**/*,*}.{cjs,js,ts,jsx,tsx,vue}\" --cache --cache-strategy content --ignore-path .eslintignore",
     "lint:write": "eslint \"{**/*,*}.{cjs,js,ts,jsx,tsx,vue}\" --cache --cache-strategy content --ignore-path .eslintignore --fix",
@@ -29,5 +32,10 @@
     "jsdom": "^24.1.2",
     "prettier": "^3.3.3",
     "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "^5.1.2",
+    "vite": "^5.4.2",
+    "vue": "^3.4.38"
   }
 }
