@@ -1,10 +1,7 @@
-// src/router.js
-
-import { VueRouterAdapter } from '@/core/routing/adapters/VueRouterAdapter';
-import { NativeRouterAdapter } from '@/core/routing/adapters/NativeRouterAdapter';
-import { HomePage } from '@/pages/home';
-import { UserPage } from '@/pages/user';
-import { NotFoundPage } from '@/pages/not-found';
+import { VueRouterAdapter } from '@/shared/routing/adapters/VueRouterAdapter';
+import { NativeRouterAdapter } from '@/shared/routing/adapters/NativeRouterAdapter';
+import { HomePage, NotFoundPage } from '@/shared/pages';
+import { UserPage } from '@/features/user/views';
 
 /**
  * Фабрика маршрутизаторов.

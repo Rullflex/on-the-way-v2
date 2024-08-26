@@ -1,4 +1,4 @@
-import { UserService } from '@/domain/services/user-service';
+import { UserService } from '@/features/user/services/user-service';
 
 /**
  * Контроллер для работы с пользователями.

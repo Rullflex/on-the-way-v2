@@ -1,5 +1,3 @@
-// src/core/adapters/rest-adapter/RestAdapter.js
-
 /**
  * @typedef {Object} RestAdapterOptions
  * @property {string} baseUrl

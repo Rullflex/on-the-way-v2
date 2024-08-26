@@ -1,9 +1,9 @@
 import { UserService } from './UserService';
-import { RestAdapter } from '@/core/adapters/rest-adapter';
-import { User } from '@/domain/models/User';
+import { RestAdapter } from '@/shared/adapters/rest-adapter';
+import { User } from '../models';
 
 // Мокаем RestAdapter
-jest.mock('@/core/adapters/rest-adapter');
+jest.mock('@/shared/adapters/rest-adapter');
 
 describe('UserService', () => {
   let userService;
